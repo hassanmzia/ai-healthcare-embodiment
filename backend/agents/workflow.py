@@ -378,6 +378,13 @@ def run_screening_workflow(
             f"WorkflowRun {wf_run.id} completed in {workflow_duration:.1f}s. "
             f"Cards: {len(patient_cards)}  Metrics: {metrics}"
         )
+
+        # ---- Generate notifications ----
+        _create_workflow_notifications(
+            wf_run, patient_cards, metrics, auto_count, draft_count,
+            recommend_count, total_flags, workflow_duration,
+        )
+
         return str(wf_run.id)
 
     except Exception as e:
@@ -385,7 +392,141 @@ def run_screening_workflow(
         wf_run.status = 'FAILED'
         wf_run.error_message = str(e)
         wf_run.save()
+
+        from core.models import Notification
+        Notification.objects.create(
+            title='Screening Workflow Failed',
+            message=f'Workflow {str(wf_run.id)[:8]} failed: {str(e)[:200]}',
+            severity='critical',
+            category='workflow',
+            metadata={'run_id': str(wf_run.id), 'error': str(e)[:500]},
+        )
         raise
+
+
+def _create_workflow_notifications(
+    wf_run,
+    patient_cards: List[Dict[str, Any]],
+    metrics: Dict[str, Any],
+    auto_count: int,
+    draft_count: int,
+    recommend_count: int,
+    total_flags: int,
+    duration: float,
+) -> None:
+    """Create notifications summarising the completed workflow run."""
+    from core.models import Notification
+
+    run_id_short = str(wf_run.id)[:8]
+    flagged = auto_count + draft_count + recommend_count
+    total = len(patient_cards)
+
+    # 1. Workflow completion summary
+    Notification.objects.create(
+        title='Screening Workflow Completed',
+        message=(
+            f'Workflow {run_id_short} screened {total} candidates in '
+            f'{duration:.1f}s. Flagged: {flagged}, '
+            f'Precision: {metrics.get("precision", 0):.2%}, '
+            f'Recall: {metrics.get("recall", 0):.2%}.'
+        ),
+        severity='success',
+        category='workflow',
+        metadata={
+            'run_id': str(wf_run.id),
+            'total': total,
+            'flagged': flagged,
+            'precision': metrics.get('precision'),
+            'recall': metrics.get('recall'),
+        },
+    )
+
+    # 2. Auto-order actions taken
+    if auto_count > 0:
+        auto_patients = [
+            c['patient_id'] for c in patient_cards
+            if c.get('action') == 'AUTO_ORDER_MRI_AND_NOTIFY_NEURO'
+        ]
+        Notification.objects.create(
+            title=f'{auto_count} Auto-Order MRI Action(s) Taken',
+            message=(
+                f'{auto_count} patient(s) had MRI orders automatically placed '
+                f'and neurologist notified: {", ".join(auto_patients[:10])}'
+                f'{"..." if len(auto_patients) > 10 else ""}.'
+            ),
+            severity='warning',
+            category='auto_action',
+            metadata={
+                'run_id': str(wf_run.id),
+                'patient_ids': auto_patients,
+            },
+        )
+
+    # 3. High-risk patients requiring review
+    high_risk = [
+        c for c in patient_cards
+        if c.get('risk_score', 0) >= 0.80
+    ]
+    if high_risk:
+        hr_ids = [c['patient_id'] for c in high_risk[:10]]
+        Notification.objects.create(
+            title=f'{len(high_risk)} High-Risk Patient(s) Identified',
+            message=(
+                f'{len(high_risk)} patient(s) scored >= 0.80 risk: '
+                f'{", ".join(hr_ids)}{"..." if len(high_risk) > 10 else ""}. '
+                f'Please review pending assessments.'
+            ),
+            severity='critical',
+            category='high_risk',
+            metadata={
+                'run_id': str(wf_run.id),
+                'patient_ids': [c['patient_id'] for c in high_risk],
+                'scores': {c['patient_id']: round(c['risk_score'], 3) for c in high_risk},
+            },
+        )
+
+    # 4. Safety flags summary
+    if total_flags > 0:
+        flagged_patients = [
+            c['patient_id'] for c in patient_cards
+            if c.get('safety_flag_count', 0) > 0
+        ]
+        Notification.objects.create(
+            title=f'Safety Flags on {len(flagged_patients)} Patient(s)',
+            message=(
+                f'{total_flags} safety flag(s) raised across '
+                f'{len(flagged_patients)} patient(s). '
+                f'Actions downgraded to RECOMMEND_ONLY where applicable.'
+            ),
+            severity='warning',
+            category='safety',
+            metadata={
+                'run_id': str(wf_run.id),
+                'total_flags': total_flags,
+                'patient_ids': flagged_patients,
+            },
+        )
+
+    # 5. Draft orders pending clinician sign-off
+    if draft_count > 0:
+        draft_patients = [
+            c['patient_id'] for c in patient_cards
+            if c.get('action') == 'DRAFT_MRI_ORDER'
+        ]
+        Notification.objects.create(
+            title=f'{draft_count} Draft MRI Order(s) Pending Approval',
+            message=(
+                f'{draft_count} MRI order draft(s) require clinician sign-off: '
+                f'{", ".join(draft_patients[:10])}'
+                f'{"..." if len(draft_patients) > 10 else ""}.'
+            ),
+            severity='info',
+            category='draft_order',
+            metadata={
+                'run_id': str(wf_run.id),
+                'patient_ids': draft_patients,
+            },
+        )
 
 
 def _compute_metrics(
