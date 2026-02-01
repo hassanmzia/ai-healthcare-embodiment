@@ -79,9 +79,6 @@ export default function AuditPage() {
                     </TableCell>
                   </TableRow>
                 ))}
-                {logs.length === 0 && (
-                  <TableRow><TableCell colSpan={5} align="center" sx={{ py: 3 }}>No audit logs yet</TableCell></TableRow>
-                )}
               </TableBody>
             </Table>
           )}

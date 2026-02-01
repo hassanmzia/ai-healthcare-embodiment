@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Box, Typography, Card, Button, CircularProgress,
+  Box, Typography, Card, CardContent, Button, CircularProgress,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip,
 } from '@mui/material';
 import { PlayArrow as PlayIcon } from '@mui/icons-material';
@@ -85,9 +85,6 @@ export default function WorkflowsPage() {
                     <TableCell sx={{ fontSize: '0.8rem' }}>{formatDate(run.created_at)}</TableCell>
                   </TableRow>
                 ))}
-                {runs.length === 0 && (
-                  <TableRow><TableCell colSpan={12} align="center" sx={{ py: 4 }}>No workflow runs yet</TableCell></TableRow>
-                )}
               </TableBody>
             </Table>
           </TableContainer>

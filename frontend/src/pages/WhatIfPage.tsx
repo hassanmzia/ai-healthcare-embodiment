@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import {
   Box, Typography, Card, CardContent, Grid, Slider, Button,
-  CircularProgress, Alert,
+  CircularProgress, Alert, Divider,
 } from '@mui/material';
 import { Science as ScienceIcon } from '@mui/icons-material';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RTooltip,
-  ResponsiveContainer, Legend,
+  ResponsiveContainer, Legend, Cell,
 } from 'recharts';
 import StatCard from '../components/StatCard';
 import { getWorkflowRuns, runWhatIf } from '../services/api';
@@ -44,18 +44,20 @@ export default function WhatIfPage() {
 
   const presets = [
     { name: 'Conservative', values: { risk_review_threshold: 0.75, draft_order_threshold: 0.88, auto_order_threshold: 0.95, max_auto_actions_per_day: 10 } },
-    { name: 'Balanced', values: { risk_review_threshold: 0.65, draft_order_threshold: 0.80, auto_order_threshold: 0.90, max_auto_actions_per_day: 20 } },
+    { name: 'Balanced (Default)', values: { risk_review_threshold: 0.65, draft_order_threshold: 0.80, auto_order_threshold: 0.90, max_auto_actions_per_day: 20 } },
     { name: 'Aggressive', values: { risk_review_threshold: 0.50, draft_order_threshold: 0.70, auto_order_threshold: 0.85, max_auto_actions_per_day: 40 } },
     { name: 'No Auto', values: { risk_review_threshold: 0.65, draft_order_threshold: 0.80, auto_order_threshold: 1.01, max_auto_actions_per_day: 0 } },
   ];
 
   if (!runId) {
-    return <Alert severity="info" sx={{ mt: 2 }}>No completed workflow runs. Run a screening workflow first.</Alert>;
+    return <Alert severity="info">No completed workflow runs. Run a screening workflow first.</Alert>;
   }
 
   const comparisonData = results.map((r, i) => ({
     name: `Scenario ${i + 1}`,
     flagged: r.results.flagged,
+    precision: r.precision,
+    recall: r.recall,
     auto: r.results.auto,
     draft: r.results.draft,
   }));
@@ -72,6 +74,7 @@ export default function WhatIfPage() {
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>Threshold Configuration</Typography>
+
               <Box sx={{ display: 'flex', gap: 1, mb: 3, flexWrap: 'wrap' }}>
                 {presets.map((p) => (
                   <Button key={p.name} size="small" variant="outlined" onClick={() => setThresholds(p.values)}>
@@ -101,7 +104,9 @@ export default function WhatIfPage() {
                 Analyze Scenario
               </Button>
               {results.length > 0 && (
-                <Button variant="text" fullWidth onClick={() => setResults([])} sx={{ mt: 1 }}>Clear Results</Button>
+                <Button variant="text" fullWidth onClick={() => setResults([])} sx={{ mt: 1 }}>
+                  Clear Results
+                </Button>
               )}
             </CardContent>
           </Card>
@@ -119,21 +124,24 @@ export default function WhatIfPage() {
                   </React.Fragment>
                 ))}
               </Grid>
-              <Card><CardContent>
-                <Typography variant="h6" gutterBottom>Scenario Comparison</Typography>
-                <ResponsiveContainer width="100%" height={350}>
-                  <BarChart data={comparisonData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <RTooltip />
-                    <Legend />
-                    <Bar dataKey="flagged" fill="#1976d2" name="Flagged" />
-                    <Bar dataKey="auto" fill="#d32f2f" name="Auto Orders" />
-                    <Bar dataKey="draft" fill="#f57c00" name="Draft Orders" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </CardContent></Card>
+
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>Scenario Comparison</Typography>
+                  <ResponsiveContainer width="100%" height={350}>
+                    <BarChart data={comparisonData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <RTooltip />
+                      <Legend />
+                      <Bar dataKey="flagged" fill="#1976d2" name="Flagged" />
+                      <Bar dataKey="auto" fill="#d32f2f" name="Auto Orders" />
+                      <Bar dataKey="draft" fill="#f57c00" name="Draft Orders" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
             </>
           ) : (
             <Card sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
