@@ -142,12 +142,12 @@ STORAGES = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS
+# CORS - services are behind nginx, so allow all origins by default
+CORS_ALLOW_ALL_ORIGINS = os.environ.get('CORS_ALLOW_ALL_ORIGINS', 'true').lower() == 'true'
 CORS_ALLOWED_ORIGINS = os.environ.get(
     'CORS_ALLOWED_ORIGINS',
-    'http://localhost:3055,http://108.48.39.238:3055'
-).split(',')
-CORS_ALLOW_ALL_ORIGINS = DEBUG
+    'http://localhost:3055'
+).split(',') if not CORS_ALLOW_ALL_ORIGINS else []
 CORS_ALLOW_CREDENTIALS = True
 
 # REST Framework
