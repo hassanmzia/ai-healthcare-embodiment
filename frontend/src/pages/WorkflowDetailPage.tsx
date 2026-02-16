@@ -57,7 +57,7 @@ export default function WorkflowDetailPage() {
   return (
     <Box>
       <Button startIcon={<BackIcon />} onClick={() => navigate('/workflows')} sx={{ mb: 2 }}>Back to Workflows</Button>
-      <Typography variant="h4" gutterBottom>Workflow Run Details</Typography>
+      <Typography variant="h4" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>Workflow Run Details</Typography>
       {run && <Chip label={run.status} color={run.status === 'COMPLETED' ? 'success' : 'error'} sx={{ mb: 2 }} />}
 
       {metrics && (
@@ -71,7 +71,7 @@ export default function WorkflowDetailPage() {
         </Grid>
       )}
 
-      <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 3 }}>
+      <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 3 }} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
         <Tab label="Risk Distribution" />
         <Tab label="Calibration" />
         <Tab label="Fairness Analysis" />

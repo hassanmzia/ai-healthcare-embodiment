@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Box, Typography, Card, CardContent, Grid, Button, TextField,
-  Table, TableBody, TableCell, TableHead, TableRow, Chip,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip,
   Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress,
 } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
@@ -39,16 +39,17 @@ export default function PoliciesPage() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Box>
-          <Typography variant="h4">Policy Configurations</Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ minWidth: 0 }}>
+          <Typography variant="h4" sx={{ fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>Policy Configurations</Typography>
           <Typography variant="body2" color="text.secondary">Manage screening threshold policies</Typography>
         </Box>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setDialogOpen(true)}>New Policy</Button>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setDialogOpen(true)} sx={{ flexShrink: 0 }}>New Policy</Button>
       </Box>
 
-      <Card>
+      <Card sx={{ overflow: 'hidden' }}>
         {loading ? <Box sx={{ p: 4, textAlign: 'center' }}><CircularProgress /></Box> : (
+          <TableContainer sx={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
           <Table>
             <TableHead>
               <TableRow>
@@ -81,6 +82,7 @@ export default function PoliciesPage() {
               ))}
             </TableBody>
           </Table>
+          </TableContainer>
         )}
       </Card>
 

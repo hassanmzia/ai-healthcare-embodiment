@@ -34,21 +34,21 @@ export default function WorkflowsPage() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Box>
-          <Typography variant="h4">Workflow Runs</Typography>
-          <Typography variant="body2" color="text.secondary">Multi-agent screening workflow execution history</Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ minWidth: 0 }}>
+          <Typography variant="h4" sx={{ fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>Workflow Runs</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ display: { xs: 'none', sm: 'block' } }}>Multi-agent screening workflow execution history</Typography>
         </Box>
-        <Button variant="contained" startIcon={triggerLoading ? <CircularProgress size={20} color="inherit" /> : <PlayIcon />} onClick={handleTrigger} disabled={triggerLoading}>
+        <Button variant="contained" startIcon={triggerLoading ? <CircularProgress size={20} color="inherit" /> : <PlayIcon />} onClick={handleTrigger} disabled={triggerLoading} sx={{ flexShrink: 0 }}>
           New Workflow Run
         </Button>
       </Box>
 
-      <Card>
+      <Card sx={{ overflow: 'hidden' }}>
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>
         ) : (
-          <TableContainer>
+          <TableContainer sx={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
             <Table>
               <TableHead>
                 <TableRow>

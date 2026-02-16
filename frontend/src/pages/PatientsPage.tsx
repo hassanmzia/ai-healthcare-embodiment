@@ -38,8 +38,8 @@ export default function PatientsPage() {
 
   return (
     <Box>
-      <Typography variant="h4" gutterBottom>Patient Registry</Typography>
-      <Typography variant="body2" color="text.secondary" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>Patient Registry</Typography>
+      <Typography variant="body2" color="text.secondary" gutterBottom sx={{ display: { xs: 'none', sm: 'block' } }}>
         Synthetic EHR patient population for MS risk screening
       </Typography>
 
@@ -76,8 +76,8 @@ export default function PatientsPage() {
         </CardContent>
       </Card>
 
-      <Card>
-        <TableContainer>
+      <Card sx={{ overflow: 'hidden' }}>
+        <TableContainer sx={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
           {loading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
               <CircularProgress />

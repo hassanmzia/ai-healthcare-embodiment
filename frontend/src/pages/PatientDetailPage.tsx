@@ -66,10 +66,10 @@ export default function PatientDetailPage() {
         Back to Patients
       </Button>
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Box>
-          <Typography variant="h4">{patient.patient_id}</Typography>
-          <Typography variant="body2" color="text.secondary">
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ minWidth: 0 }}>
+          <Typography variant="h4" sx={{ fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>{patient.patient_id}</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ wordBreak: 'break-word' }}>
             {patient.age}yo {patient.sex === 'F' ? 'Female' : 'Male'} | {patient.visits_last_year} visits/year | Dx: {patient.lookalike_dx}
           </Typography>
         </Box>
@@ -78,7 +78,7 @@ export default function PatientDetailPage() {
           startIcon={screeningLoading ? <CircularProgress size={20} color="inherit" /> : <AgentIcon />}
           onClick={handleA2AScreening}
           disabled={screeningLoading}
-          sx={{ borderRadius: 3 }}
+          sx={{ borderRadius: 3, flexShrink: 0, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
         >
           Run A2A Screening
         </Button>
@@ -130,7 +130,7 @@ export default function PatientDetailPage() {
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>Clinical Note</Typography>
-              <Paper variant="outlined" sx={{ p: 2, bgcolor: 'action.hover', fontFamily: 'monospace', fontSize: '0.85rem' }}>
+              <Paper variant="outlined" sx={{ p: 2, bgcolor: 'action.hover', fontFamily: 'monospace', fontSize: { xs: '0.75rem', sm: '0.85rem' }, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
                 {patient.note || 'No note available'}
               </Paper>
             </CardContent>
@@ -180,11 +180,12 @@ export default function PatientDetailPage() {
                 <CardContent>
                   <Typography variant="h6" gutterBottom>Feature Contributions</Typography>
                   {contribData.length > 0 ? (
-                    <ResponsiveContainer width="100%" height={350}>
-                      <BarChart data={contribData} layout="vertical" margin={{ left: 120 }}>
+                    <Box sx={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                    <ResponsiveContainer width="100%" height={350} minWidth={500}>
+                      <BarChart data={contribData} layout="vertical" margin={{ left: 100 }}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis type="number" />
-                        <YAxis type="category" dataKey="name" width={110} tick={{ fontSize: 12 }} />
+                        <YAxis type="category" dataKey="name" width={90} tick={{ fontSize: 11 }} />
                         <RTooltip />
                         <Bar dataKey="value">
                           {contribData.map((entry, i) => (
@@ -193,6 +194,7 @@ export default function PatientDetailPage() {
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
+                    </Box>
                   ) : (
                     <Typography color="text.secondary">No feature contribution data available</Typography>
                   )}

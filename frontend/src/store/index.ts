@@ -25,6 +25,7 @@ interface AppState {
   // Sidebar
   sidebarOpen: boolean;
   toggleSidebar: () => void;
+  setSidebarOpen: (open: boolean) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -44,6 +45,7 @@ export const useAppStore = create<AppState>((set) => ({
   darkMode: false,
   toggleDarkMode: () => set((state) => ({ darkMode: !state.darkMode })),
 
-  sidebarOpen: true,
+  sidebarOpen: typeof window !== 'undefined' && window.innerWidth < 900 ? false : true,
   toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
+  setSidebarOpen: (open) => set({ sidebarOpen: open }),
 }));

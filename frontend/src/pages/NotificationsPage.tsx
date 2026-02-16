@@ -47,12 +47,12 @@ export default function NotificationsPage() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Box>
-          <Typography variant="h4">Notifications</Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ minWidth: 0 }}>
+          <Typography variant="h4" sx={{ fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>Notifications</Typography>
           <Typography variant="body2" color="text.secondary">System alerts and clinician notifications</Typography>
         </Box>
-        <Button variant="outlined" startIcon={<DoneAllIcon />} onClick={handleMarkAllRead}>Mark All Read</Button>
+        <Button variant="outlined" startIcon={<DoneAllIcon />} onClick={handleMarkAllRead} sx={{ flexShrink: 0 }}>Mark All Read</Button>
       </Box>
 
       <Card>

@@ -64,8 +64,8 @@ export default function WhatIfPage() {
 
   return (
     <Box>
-      <Typography variant="h4" gutterBottom>Policy What-If Analysis</Typography>
-      <Typography variant="body2" color="text.secondary" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ fontSize: { xs: '1.25rem', sm: '2.125rem' } }}>Policy What-If Analysis</Typography>
+      <Typography variant="body2" color="text.secondary" gutterBottom sx={{ display: { xs: 'none', sm: 'block' } }}>
         Explore how policy threshold changes impact screening outcomes
       </Typography>
 

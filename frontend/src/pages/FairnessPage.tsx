@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Box, Typography, Card, CardContent, Grid, Chip, CircularProgress,
-  Table, TableBody, TableCell, TableHead, TableRow, Alert,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Alert,
 } from '@mui/material';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RTooltip,
@@ -38,8 +38,8 @@ export default function FairnessPage() {
 
   return (
     <Box>
-      <Typography variant="h4" gutterBottom>Fairness & Equity Dashboard</Typography>
-      <Typography variant="body2" color="text.secondary" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ fontSize: { xs: '1.25rem', sm: '2.125rem' } }}>Fairness & Equity Dashboard</Typography>
+      <Typography variant="body2" color="text.secondary" gutterBottom sx={{ display: { xs: 'none', sm: 'block' } }}>
         Responsible AI monitoring: stratified metrics by demographic and clinical groups
       </Typography>
 
@@ -74,7 +74,8 @@ export default function FairnessPage() {
 
           <Grid item xs={12}>
             <Card><CardContent>
-              <Typography variant="h6" gutterBottom>Subgroup Metrics Table</Typography>
+              <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>Subgroup Metrics Table</Typography>
+              <TableContainer sx={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
               <Table size="small">
                 <TableHead>
                   <TableRow>
@@ -105,6 +106,7 @@ export default function FairnessPage() {
                   ))}
                 </TableBody>
               </Table>
+              </TableContainer>
             </CardContent></Card>
           </Grid>
         </Grid>
