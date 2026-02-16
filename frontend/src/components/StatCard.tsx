@@ -13,13 +13,13 @@ interface StatCardProps {
 export default function StatCard({ title, value, subtitle, icon, color = '#1976d2', trend }: StatCardProps) {
   return (
     <Card sx={{ height: '100%', position: 'relative', overflow: 'visible' }}>
-      <CardContent sx={{ pb: '16px !important' }}>
+      <CardContent sx={{ pb: '16px !important', px: { xs: 1.5, sm: 2 } }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <Box>
-            <Typography variant="body2" color="text.secondary" gutterBottom>
+          <Box sx={{ minWidth: 0 }}>
+            <Typography variant="body2" color="text.secondary" gutterBottom sx={{ fontSize: { xs: '0.7rem', sm: '0.875rem' } }}>
               {title}
             </Typography>
-            <Typography variant="h4" sx={{ fontWeight: 700, color }}>
+            <Typography variant="h4" sx={{ fontWeight: 700, color, fontSize: { xs: '1.25rem', sm: '2.125rem' } }}>
               {value}
             </Typography>
             {subtitle && (
@@ -39,12 +39,13 @@ export default function StatCard({ title, value, subtitle, icon, color = '#1976d
           {icon && (
             <Box
               sx={{
-                p: 1.5,
+                p: { xs: 1, sm: 1.5 },
                 borderRadius: 2,
                 bgcolor: `${color}15`,
                 color,
-                display: 'flex',
+                display: { xs: 'none', sm: 'flex' },
                 alignItems: 'center',
+                flexShrink: 0,
               }}
             >
               {icon}

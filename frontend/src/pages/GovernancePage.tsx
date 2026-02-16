@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Box, Typography, Card, CardContent, Grid, Chip, CircularProgress,
-  Table, TableBody, TableCell, TableHead, TableRow, Button,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button,
   Dialog, DialogTitle, DialogContent, DialogActions, Divider, IconButton,
 } from '@mui/material';
 import { Security as SecurityIcon, Close as CloseIcon } from '@mui/icons-material';
@@ -43,14 +43,14 @@ export default function GovernancePage() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Box>
-          <Typography variant="h4">Governance & Compliance</Typography>
-          <Typography variant="body2" color="text.secondary">Safety rules, compliance reports, and audit controls</Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ minWidth: 0 }}>
+          <Typography variant="h4" sx={{ fontSize: { xs: '1.25rem', sm: '2.125rem' } }}>Governance & Compliance</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ display: { xs: 'none', sm: 'block' } }}>Safety rules, compliance reports, and audit controls</Typography>
         </Box>
         <Button variant="contained" startIcon={generating ? <CircularProgress size={20} color="inherit" /> : <SecurityIcon />}
-          onClick={handleGenerate} disabled={generating || !latestRunId}>
-          Generate Compliance Report
+          onClick={handleGenerate} disabled={generating || !latestRunId} sx={{ flexShrink: 0, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+          Generate Report
         </Button>
       </Box>
 
@@ -58,7 +58,8 @@ export default function GovernancePage() {
         <Grid item xs={12}>
           <Card>
             <CardContent>
-              <Typography variant="h6" gutterBottom>Active Governance Rules</Typography>
+              <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>Active Governance Rules</Typography>
+              <TableContainer sx={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
               <Table size="small">
                 <TableHead>
                   <TableRow>
@@ -90,6 +91,7 @@ export default function GovernancePage() {
                   )}
                 </TableBody>
               </Table>
+              </TableContainer>
             </CardContent>
           </Card>
         </Grid>
@@ -97,7 +99,8 @@ export default function GovernancePage() {
         <Grid item xs={12}>
           <Card>
             <CardContent>
-              <Typography variant="h6" gutterBottom>Compliance Reports</Typography>
+              <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>Compliance Reports</Typography>
+              <TableContainer sx={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
               <Table size="small">
                 <TableHead>
                   <TableRow>
@@ -123,6 +126,7 @@ export default function GovernancePage() {
                   )}
                 </TableBody>
               </Table>
+              </TableContainer>
             </CardContent>
           </Card>
         </Grid>
@@ -179,7 +183,7 @@ export default function GovernancePage() {
                       { label: 'True Negatives', value: selectedReport.data.metrics.tn, color: '#1565c0' },
                       { label: 'False Negatives', value: selectedReport.data.metrics.fn, color: '#f57c00' },
                     ].map((m) => (
-                      <Grid item xs={3} key={m.label}>
+                      <Grid item xs={6} sm={3} key={m.label}>
                         <Card variant="outlined">
                           <CardContent sx={{ py: 1, '&:last-child': { pb: 1 } }}>
                             <Typography variant="caption" color="text.secondary">{m.label}</Typography>

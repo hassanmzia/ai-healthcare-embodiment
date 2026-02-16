@@ -81,10 +81,10 @@ export default function DashboardPage() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Box>
-          <Typography variant="h4">Dashboard</Typography>
-          <Typography variant="body2" color="text.secondary">
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ minWidth: 0 }}>
+          <Typography variant="h4" sx={{ fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>Dashboard</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ display: { xs: 'none', sm: 'block' } }}>
             AI Healthcare Interaction Embodiment - MS Risk Screening
           </Typography>
         </Box>
@@ -94,14 +94,14 @@ export default function DashboardPage() {
           startIcon={triggerLoading ? <CircularProgress size={20} color="inherit" /> : <PlayIcon />}
           onClick={handleTriggerWorkflow}
           disabled={triggerLoading}
-          sx={{ borderRadius: 3, px: 4 }}
+          sx={{ borderRadius: 3, px: { xs: 2, sm: 4 }, fontSize: { xs: '0.75rem', sm: '0.875rem' }, whiteSpace: 'nowrap', flexShrink: 0 }}
         >
           Run Screening Workflow
         </Button>
       </Box>
 
-      <Grid container spacing={3} sx={{ mb: 3 }}>
-        <Grid item xs={12} sm={6} md={3}>
+      <Grid container spacing={{ xs: 2, sm: 3 }} sx={{ mb: 3 }}>
+        <Grid item xs={6} sm={6} md={3}>
           <StatCard
             title="Total Patients"
             value={dashboard.total_patients.toLocaleString()}
@@ -110,7 +110,7 @@ export default function DashboardPage() {
             color="#1565c0"
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid item xs={6} sm={6} md={3}>
           <StatCard
             title="At-Risk Population"
             value={dashboard.at_risk_count.toLocaleString()}
@@ -119,7 +119,7 @@ export default function DashboardPage() {
             color="#d32f2f"
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid item xs={6} sm={6} md={3}>
           <StatCard
             title="Pending Reviews"
             value={dashboard.pending_reviews}
@@ -128,7 +128,7 @@ export default function DashboardPage() {
             color="#f57c00"
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid item xs={6} sm={6} md={3}>
           <StatCard
             title="Workflow Runs"
             value={dashboard.total_workflow_runs}
@@ -141,8 +141,8 @@ export default function DashboardPage() {
 
       {dashboard.latest_run && (
         <>
-          <Grid container spacing={3} sx={{ mb: 3 }}>
-            <Grid item xs={12} sm={6} md={3}>
+          <Grid container spacing={{ xs: 2, sm: 3 }} sx={{ mb: 3 }}>
+            <Grid item xs={6} sm={6} md={3}>
               <StatCard
                 title="Precision"
                 value={formatPercent(dashboard.latest_run.precision)}
@@ -151,7 +151,7 @@ export default function DashboardPage() {
                 color="#2e7d32"
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={6} sm={6} md={3}>
               <StatCard
                 title="Recall"
                 value={formatPercent(dashboard.latest_run.recall)}
@@ -160,7 +160,7 @@ export default function DashboardPage() {
                 color="#1565c0"
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={6} sm={6} md={3}>
               <StatCard
                 title="Flagged Patients"
                 value={dashboard.latest_run.flagged}
@@ -169,7 +169,7 @@ export default function DashboardPage() {
                 color="#f57c00"
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={6} sm={6} md={3}>
               <StatCard
                 title="Auto Actions"
                 value={dashboard.latest_run.auto_actions}
@@ -180,18 +180,18 @@ export default function DashboardPage() {
             </Grid>
           </Grid>
 
-          <Grid container spacing={3} sx={{ mb: 3 }}>
+          <Grid container spacing={{ xs: 2, sm: 3 }} sx={{ mb: 3 }}>
             <Grid item xs={12} md={6}>
               <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>Action Distribution</Typography>
-                  <ResponsiveContainer width="100%" height={300}>
+                <CardContent sx={{ px: { xs: 1.5, sm: 3 } }}>
+                  <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>Action Distribution</Typography>
+                  <ResponsiveContainer width="100%" height={280}>
                     <PieChart>
                       <Pie
                         data={actionData}
                         cx="50%"
                         cy="50%"
-                        outerRadius={100}
+                        outerRadius={80}
                         dataKey="value"
                         label={({ name, value }) => `${name}: ${value}`}
                       >
@@ -208,9 +208,9 @@ export default function DashboardPage() {
             </Grid>
             <Grid item xs={12} md={6}>
               <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>Autonomy Levels</Typography>
-                  <ResponsiveContainer width="100%" height={300}>
+                <CardContent sx={{ px: { xs: 1.5, sm: 3 } }}>
+                  <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>Autonomy Levels</Typography>
+                  <ResponsiveContainer width="100%" height={280}>
                     <BarChart data={[
                       { name: 'Recommend Only', count: dashboard.latest_run.recommend_actions, fill: '#1976d2' },
                       { name: 'Draft Order', count: dashboard.latest_run.draft_actions, fill: '#f57c00' },
@@ -240,10 +240,10 @@ export default function DashboardPage() {
         </Alert>
       )}
 
-      <Card>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>Recent Workflow Runs</Typography>
-          <TableContainer>
+      <Card sx={{ overflow: 'hidden' }}>
+        <CardContent sx={{ px: { xs: 1, sm: 3 } }}>
+          <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>Recent Workflow Runs</Typography>
+          <TableContainer sx={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
             <Table size="small">
               <TableHead>
                 <TableRow>

@@ -35,8 +35,8 @@ export default function AuditPage() {
 
   return (
     <Box>
-      <Typography variant="h4" gutterBottom>Audit Trail</Typography>
-      <Typography variant="body2" color="text.secondary" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>Audit Trail</Typography>
+      <Typography variant="body2" color="text.secondary" gutterBottom sx={{ display: { xs: 'none', sm: 'block' } }}>
         Complete audit log of all system actions, decisions, and reviews
       </Typography>
 
@@ -55,8 +55,8 @@ export default function AuditPage() {
         </Box>
       </Card>
 
-      <Card>
-        <TableContainer>
+      <Card sx={{ overflow: 'hidden' }}>
+        <TableContainer sx={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
           {loading ? <Box sx={{ p: 4, textAlign: 'center' }}><CircularProgress /></Box> : (
             <Table size="small">
               <TableHead>

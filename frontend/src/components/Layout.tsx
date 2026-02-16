@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box, Drawer, AppBar, Toolbar, Typography, List, ListItem,
   ListItemButton, ListItemIcon, ListItemText, IconButton, Badge,
-  Divider, Chip, Tooltip, Avatar, useTheme,
+  Divider, Chip, Tooltip, Avatar, useTheme, useMediaQuery,
 } from '@mui/material';
 import {
   Dashboard as DashboardIcon,
@@ -51,7 +51,8 @@ export default function Layout({ children }: LayoutProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
-  const { sidebarOpen, toggleSidebar, darkMode, toggleDarkMode, unreadCount, setUnreadCount, setDashboard } = useAppStore();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const { sidebarOpen, toggleSidebar, setSidebarOpen, darkMode, toggleDarkMode, unreadCount, setUnreadCount, setDashboard } = useAppStore();
 
   useEffect(() => {
     getDashboard().then((r) => setDashboard(r.data)).catch(() => {});
@@ -61,6 +62,13 @@ export default function Layout({ children }: LayoutProps) {
     }, 30000);
     return () => clearInterval(interval);
   }, [setDashboard, setUnreadCount]);
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
+  };
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
@@ -73,17 +81,17 @@ export default function Layout({ children }: LayoutProps) {
             : 'linear-gradient(135deg, #1565c0 0%, #1976d2 100%)',
         }}
       >
-        <Toolbar>
-          <IconButton color="inherit" edge="start" onClick={toggleSidebar} sx={{ mr: 2 }}>
+        <Toolbar sx={{ minHeight: { xs: 56, sm: 64 }, px: { xs: 1, sm: 2 } }}>
+          <IconButton color="inherit" edge="start" onClick={toggleSidebar} sx={{ mr: { xs: 0.5, sm: 2 } }}>
             <MenuIcon />
           </IconButton>
-          <HospitalIcon sx={{ mr: 1 }} />
-          <Typography variant="h6" noWrap sx={{ flexGrow: 1, fontWeight: 700 }}>
+          <HospitalIcon sx={{ mr: 1, display: { xs: 'none', sm: 'block' } }} />
+          <Typography variant="h6" noWrap sx={{ flexGrow: 1, fontWeight: 700, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
             MS Risk Lab
             <Chip
               label="AI Healthcare Assistant"
               size="small"
-              sx={{ ml: 1.5, bgcolor: 'rgba(255,255,255,0.15)', color: 'white', fontWeight: 500 }}
+              sx={{ ml: 1.5, bgcolor: 'rgba(255,255,255,0.15)', color: 'white', fontWeight: 500, display: { xs: 'none', md: 'inline-flex' } }}
             />
           </Typography>
           <Tooltip title={darkMode ? 'Light Mode' : 'Dark Mode'}>
@@ -92,14 +100,14 @@ export default function Layout({ children }: LayoutProps) {
             </IconButton>
           </Tooltip>
           <Tooltip title="Notifications">
-            <IconButton color="inherit" onClick={() => navigate('/notifications')}>
+            <IconButton color="inherit" onClick={() => handleNavigation('/notifications')}>
               <Badge badgeContent={unreadCount} color="error">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
           </Tooltip>
           <Tooltip title="Clinician">
-            <Avatar sx={{ ml: 1, bgcolor: 'rgba(255,255,255,0.2)', width: 36, height: 36 }}>
+            <Avatar sx={{ ml: 1, bgcolor: 'rgba(255,255,255,0.2)', width: { xs: 30, sm: 36 }, height: { xs: 30, sm: 36 }, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
               Dr
             </Avatar>
           </Tooltip>
@@ -107,10 +115,12 @@ export default function Layout({ children }: LayoutProps) {
       </AppBar>
 
       <Drawer
-        variant="persistent"
+        variant={isMobile ? 'temporary' : 'persistent'}
         open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        ModalProps={{ keepMounted: true }}
         sx={{
-          width: sidebarOpen ? DRAWER_WIDTH : 0,
+          width: sidebarOpen && !isMobile ? DRAWER_WIDTH : 0,
           flexShrink: 0,
           '& .MuiDrawer-paper': {
             width: DRAWER_WIDTH,
@@ -120,7 +130,7 @@ export default function Layout({ children }: LayoutProps) {
           },
         }}
       >
-        <Toolbar />
+        <Toolbar sx={{ minHeight: { xs: 56, sm: 64 } }} />
         <Box sx={{ overflow: 'auto', mt: 1 }}>
           <List>
             {menuItems.map((item, index) =>
@@ -130,7 +140,7 @@ export default function Layout({ children }: LayoutProps) {
                 <ListItem key={item.text} disablePadding sx={{ px: 1 }}>
                   <ListItemButton
                     selected={location.pathname === item.path}
-                    onClick={() => navigate(item.path!)}
+                    onClick={() => handleNavigation(item.path!)}
                     sx={{
                       borderRadius: 2,
                       mb: 0.5,
@@ -170,11 +180,15 @@ export default function Layout({ children }: LayoutProps) {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
-          mt: 8,
-          ml: sidebarOpen ? 0 : `-${DRAWER_WIDTH}px`,
+          p: { xs: 1.5, sm: 2, md: 3 },
+          mt: { xs: 7, sm: 8 },
+          ml: !isMobile && sidebarOpen ? 0 : isMobile ? 0 : `-${DRAWER_WIDTH}px`,
           transition: 'margin 0.3s',
           minHeight: 'calc(100vh - 64px)',
+          overflow: 'hidden',
+          width: '100%',
+          maxWidth: '100vw',
+          boxSizing: 'border-box',
         }}
       >
         {children}

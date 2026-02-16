@@ -44,8 +44,8 @@ export default function AssessmentsPage() {
 
   return (
     <Box>
-      <Typography variant="h4" gutterBottom>Risk Assessments</Typography>
-      <Typography variant="body2" color="text.secondary" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>Risk Assessments</Typography>
+      <Typography variant="body2" color="text.secondary" gutterBottom sx={{ display: { xs: 'none', sm: 'block' } }}>
         Patient risk assessments from multi-agent screening workflow
       </Typography>
 
@@ -64,8 +64,8 @@ export default function AssessmentsPage() {
         </CardContent>
       </Card>
 
-      <Card>
-        <TableContainer>
+      <Card sx={{ overflow: 'hidden' }}>
+        <TableContainer sx={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
           {loading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>
           ) : (

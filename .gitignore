@@ -39,3 +39,9 @@ Thumbs.db
 
 # Database
 *.sqlite3
+
+# SSL certificates (keep .gitkeep only)
+ssl/*.pem
+ssl/*.key
+ssl/*.crt
+ssl/*.csr

@@ -40,12 +40,12 @@ export default function AgentsPage() {
 
   return (
     <Box>
-      <Typography variant="h4" gutterBottom>AI Agent System</Typography>
-      <Typography variant="body2" color="text.secondary" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>AI Agent System</Typography>
+      <Typography variant="body2" color="text.secondary" gutterBottom sx={{ display: { xs: 'none', sm: 'block' } }}>
         MCP (Model Context Protocol) tools and A2A (Agent-to-Agent) registry
       </Typography>
 
-      <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 3 }}>
+      <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 3 }} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
         <Tab icon={<AgentIcon />} label="A2A Agents" iconPosition="start" />
         <Tab icon={<MCPIcon />} label="MCP Tools" iconPosition="start" />
         <Tab label="Tool Playground" />
